@@ -11,6 +11,7 @@ async function main() {
 			last_name: 'Nimda',
 			email: 'admin@solu.com',
 			password: 'admin',
+			phone: '111-222-333',
 			role: 'ADMIN',
 			isBlocked: false,
 		},
