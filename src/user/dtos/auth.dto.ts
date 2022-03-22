@@ -33,3 +33,11 @@ export class SignupDto {
 	@IsEnum(UserRoles)
 	role: UserRoles;
 }
+
+export class SigninDto {
+	@IsEmail()
+	email: string;
+
+	@IsString()
+	password: string;
+}
