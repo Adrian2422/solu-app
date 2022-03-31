@@ -45,7 +45,6 @@ module.exports = {
     'array-bracket-spacing': ['error', 'always', { 'singleValue': false }],
     'yoda' : ['error', 'never'],
     'eol-last': ['error', 'always'],
-    'indent': ['error', 'tab'],
     'no-multi-spaces': 'warn',
     'no-multiple-empty-lines': 'warn',
     'quotes': ['error', 'single'],
