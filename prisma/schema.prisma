@@ -11,16 +11,25 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  first_name String
-  last_name  String
-  email      String    @unique
-  phone      String
-  password   String
-  role       UserRoles
-  isBlocked  Boolean   @default(false)
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  id            Int            @id @default(autoincrement())
+  first_name    String
+  last_name     String
+  email         String         @unique
+  phone         String
+  password      String
+  role          UserRoles
+  is_blocked    Boolean        @default(false)
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  user_settings UserSettings?
+}
+
+model UserSettings {
+  id       Int       @id @default(autoincrement())
+  language Languages
+  color    String
+  user_id  Int
+  user     User      @relation(fields: [user_id], references: [id])
 }
 
 enum UserRoles {
@@ -28,4 +37,9 @@ enum UserRoles {
   ADMIN
   SUPPORT
   USER
+}
+
+enum Languages {
+  EN
+  PL
 }

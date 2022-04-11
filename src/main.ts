@@ -9,14 +9,14 @@ async function bootstrap() {
 			whitelist: true,
 			transform: true,
 			transformOptions: {
-				enableImplicitConversion: true,
-			},
-		}),
+				enableImplicitConversion: true
+			}
+		})
 	);
 	app.enableCors({
 		origin: true,
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-		credentials: true,
+		credentials: true
 	});
 	await app.listen(3000);
 }

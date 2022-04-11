@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcryptjs';
-import { PrismaClient, User } from '@prisma/client';
 import { faker } from '@faker-js/faker';
+import { Languages, PrismaClient } from '@prisma/client';
 
 const randomUsersCount = 10;
 const prisma = new PrismaClient();
@@ -11,6 +11,11 @@ function hashPassword(password: string): Promise<string> {
 }
 
 async function main(): Promise<void> {
+	generateAdmin();
+	generateUsers();
+}
+
+async function generateAdmin() {
 	await prisma.user.upsert({
 		where: { email: 'admin@solu.com' },
 		update: {},
@@ -21,13 +26,40 @@ async function main(): Promise<void> {
 			password: await hashPassword('P0klik4$'),
 			phone: '111-222-333',
 			role: 'ADMIN',
-			isBlocked: false,
-		},
+			is_blocked: false,
+			user_settings: {
+				create: {
+					language: Languages.PL,
+					color: faker.internet.color()
+				}
+			}
+		}
 	});
-
-	generateUsers();
 }
 
+async function generateUsers() {
+	for (let i = 0; i < randomUsersCount; i++) {
+		await prisma.user.create({
+			data: {
+				first_name: faker.name.firstName(),
+				last_name: faker.name.lastName(),
+				email: faker.internet.email(),
+				password: await hashPassword('P0klik4$'),
+				phone: faker.phone.phoneNumber('###-###-###'),
+				role: 'USER',
+				is_blocked: false,
+				user_settings: {
+					create: {
+						language: Languages.PL,
+						color: faker.internet.color()
+					}
+				}
+			}
+		});
+	}
+}
+
+// EXECUTE
 main()
 	.catch((e) => {
 		console.error(e);
@@ -36,23 +68,3 @@ main()
 	.finally(async () => {
 		await prisma.$disconnect();
 	});
-
-async function generateUsers() {
-	const users = [];
-
-	for (let i = 0; i < randomUsersCount; i++) {
-		users[i] = {
-			first_name: faker.name.firstName(),
-			last_name: faker.name.lastName(),
-			email: faker.internet.email(),
-			password: await hashPassword('P0klik4$'),
-			phone: faker.phone.phoneNumber('###-###-###'),
-			role: 'USER',
-			isBlocked: false,
-		};
-	}
-
-	await prisma.user.createMany({
-		data: users,
-	});
-}
