@@ -1,43 +1,44 @@
 import { UserRoles } from '@prisma/client';
+import { Exclude } from 'class-transformer';
 import {
-	IsEmail,
-	IsEnum,
-	IsNotEmpty,
 	IsString,
+	IsNotEmpty,
+	IsEmail,
 	Matches,
-	MinLength
+	MinLength,
+	IsEnum,
+	IsOptional
 } from 'class-validator';
 
-export class SignupDto {
+export class UpdateUserDto {
+	@IsOptional()
 	@IsString()
 	@IsNotEmpty()
-	firstName: string;
+	@Exclude()
+	firstName?: string;
 
+	@IsOptional()
 	@IsString()
 	@IsNotEmpty()
-	lastName: string;
+	lastName?: string;
 
+	@IsOptional()
 	@IsEmail()
-	email: string;
+	email?: string;
 
+	@IsOptional()
 	@Matches(/^(?:\d{3}\-){2}\d{3}$/, {
 		message:
 			'phone must be a valid number separated by dashes (e.g. 111-222-333)'
 	})
-	phone: string;
+	phone?: string;
 
+	@IsOptional()
 	@IsString()
 	@MinLength(8)
-	password: string;
+	password?: string;
 
+	@IsOptional()
 	@IsEnum(UserRoles)
-	role: UserRoles;
-}
-
-export class SigninDto {
-	@IsEmail()
-	email: string;
-
-	@IsString()
-	password: string;
+	role?: UserRoles;
 }

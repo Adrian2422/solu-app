@@ -1,14 +1,16 @@
+import CreateUserSettingsDto from 'src/user-settings/dtos/createUserSettings.dto';
+import { Type } from 'class-transformer';
 import { UserRoles } from '@prisma/client';
 import {
-	IsEmail,
-	IsEnum,
-	IsNotEmpty,
 	IsString,
+	IsNotEmpty,
+	IsEmail,
 	Matches,
-	MinLength
+	MinLength,
+	IsEnum
 } from 'class-validator';
 
-export class SignupDto {
+export class CreateUserDto {
 	@IsString()
 	@IsNotEmpty()
 	firstName: string;
@@ -32,12 +34,7 @@ export class SignupDto {
 
 	@IsEnum(UserRoles)
 	role: UserRoles;
-}
 
-export class SigninDto {
-	@IsEmail()
-	email: string;
-
-	@IsString()
-	password: string;
+	@Type(() => CreateUserSettingsDto)
+	userSettings: CreateUserSettingsDto;
 }
