@@ -1,12 +1,19 @@
+import { IUserType } from './interfaces/IUserType';
+import { AuthGuard } from './../guards/auth.guard';
 import { CreateUserDto } from './dtos/createUser.dto';
+import { Roles } from 'src/decorators/roles.decorator';
 import { UpdateUserDto } from './dtos/updateUser.dto';
+import { UserRoles } from '@prisma/client';
 import { UserService } from './user.service';
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { User } from 'src/decorators/user.decorator';
 
 @Controller('user')
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
+	@Roles(UserRoles.ADMIN, UserRoles.SUPERUSER)
+	@UseGuards(AuthGuard)
 	@Get()
 	findAll() {
 		return this.userService.findAll();
@@ -18,7 +25,7 @@ export class UserController {
 	}
 
 	@Post()
-	create(@Body() createUserDto: CreateUserDto) {
+	create(@Body() createUserDto: CreateUserDto, @User() user: IUserType) {
 		return this.userService.create(createUserDto);
 	}
 
