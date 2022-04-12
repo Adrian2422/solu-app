@@ -13,4 +13,3 @@ import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 	]
 })
 export class UserSettingsModule {}
-

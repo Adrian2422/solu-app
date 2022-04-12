@@ -5,6 +5,6 @@ export default class UserSettingsResponse {
 	color: string;
 
 	constructor(partial: Partial<UserSettingsResponse>) {
-    Object.assign(this, partial);
-  }
+		Object.assign(this, partial);
+	}
 }

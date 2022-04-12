@@ -8,17 +8,17 @@ export class UserResponseDto {
 	first_name: string;
 
 	@Expose({ name: 'firstName' })
-  firstName() {
-    return this.first_name;
-  }
+	firstName() {
+		return this.first_name;
+	}
 
 	@Exclude()
 	last_name: string;
 
 	@Expose({ name: 'lastName' })
-  lastName() {
-    return this.last_name;
-  }
+	lastName() {
+		return this.last_name;
+	}
 
 	email: string;
 	phone: string;
@@ -32,9 +32,9 @@ export class UserResponseDto {
 	is_blocked: boolean;
 
 	@Expose({ name: 'isBlocked' })
-  isBlocked() {
-    return this.is_blocked;
-  }
+	isBlocked() {
+		return this.is_blocked;
+	}
 
 	@Exclude()
 	created_at: Date;
@@ -43,7 +43,6 @@ export class UserResponseDto {
 	updated_at: Date;
 
 	constructor(partial: Partial<UserResponseDto>) {
-    Object.assign(this, partial);
-  }
-
+		Object.assign(this, partial);
+	}
 }

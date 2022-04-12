@@ -1,7 +1,14 @@
 import CreateUserSettingsDto from 'src/user-settings/dtos/createUserSettings.dto';
 import { Type } from 'class-transformer';
 import { UserRoles } from '@prisma/client';
-import { IsString, IsNotEmpty, IsEmail, Matches, MinLength, IsEnum } from 'class-validator';
+import {
+	IsString,
+	IsNotEmpty,
+	IsEmail,
+	Matches,
+	MinLength,
+	IsEnum
+} from 'class-validator';
 
 export class CreateUserDto {
 	@IsString()
@@ -28,6 +35,6 @@ export class CreateUserDto {
 	@IsEnum(UserRoles)
 	role: UserRoles;
 
-  @Type(() => CreateUserSettingsDto)
-	userSettings: CreateUserSettingsDto
+	@Type(() => CreateUserSettingsDto)
+	userSettings: CreateUserSettingsDto;
 }

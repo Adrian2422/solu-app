@@ -16,4 +16,3 @@ describe('UserSettingsController', () => {
 		expect(controller).toBeDefined();
 	});
 });
-

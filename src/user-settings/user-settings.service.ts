@@ -34,9 +34,9 @@ export class UserSettingsService {
 			where: {
 				id
 			}
-		})
+		});
 
-		if(!userSettings) {
+		if (!userSettings) {
 			throw new NotFoundException();
 		}
 
@@ -58,4 +58,3 @@ export class UserSettingsService {
 		});
 	}
 }
-

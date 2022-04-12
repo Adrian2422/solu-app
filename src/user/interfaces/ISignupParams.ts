@@ -7,4 +7,4 @@ export default interface ISignupParams {
 	phone: string;
 	password: string;
 	role: UserRoles;
-};
+}

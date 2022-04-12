@@ -149,4 +149,3 @@ export class UserService {
 		return new UserResponseDto(deletedUser);
 	}
 }
-

@@ -1,6 +1,14 @@
-import { UserRoles } from "@prisma/client";
-import { Exclude } from "class-transformer";
-import { IsString, IsNotEmpty, IsEmail, Matches, MinLength, IsEnum, IsOptional } from "class-validator";
+import { UserRoles } from '@prisma/client';
+import { Exclude } from 'class-transformer';
+import {
+	IsString,
+	IsNotEmpty,
+	IsEmail,
+	Matches,
+	MinLength,
+	IsEnum,
+	IsOptional
+} from 'class-validator';
 
 export class UpdateUserDto {
 	@IsOptional()
