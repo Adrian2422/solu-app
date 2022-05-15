@@ -1,8 +1,18 @@
 import * as bcrypt from 'bcryptjs';
 import { faker } from '@faker-js/faker';
-import { Languages, PrismaClient } from '@prisma/client';
+import {
+	Languages,
+	PrismaClient,
+	TicketPriority,
+	TicketType,
+	UserRoles
+} from '@prisma/client';
 
-const randomUsersCount = 10;
+const randomUsersCount = 50;
+const randomProductTypeCount = 5;
+const randomProductCount = 100;
+const randomTicketsCount = 200;
+const randomFilesCount = 500;
 const prisma = new PrismaClient();
 
 function hashPassword(password: string): Promise<string> {
@@ -12,7 +22,12 @@ function hashPassword(password: string): Promise<string> {
 
 async function main(): Promise<void> {
 	generateAdmin();
-	generateUsers();
+	generateProductTypes()
+		.then(() => generateUsers())
+		.then(() => generateProducts())
+		.then(() => generateTickets())
+		.then(() => generateFiles())
+		.catch((error) => console.log(error.message));
 }
 
 async function generateAdmin() {
@@ -46,8 +61,8 @@ async function generateUsers() {
 				email: faker.internet.email(),
 				password: await hashPassword('P0klik4$'),
 				phone: faker.phone.phoneNumber('###-###-###'),
-				role: 'USER',
-				is_blocked: false,
+				role: randomEnum(UserRoles),
+				is_blocked: faker.datatype.boolean(),
 				user_settings: {
 					create: {
 						language: Languages.PL,
@@ -57,6 +72,71 @@ async function generateUsers() {
 			}
 		});
 	}
+}
+
+async function generateProductTypes() {
+	for (let i = 0; i < randomProductTypeCount; i++) {
+		await prisma.productType.create({
+			data: {
+				name: `productType${i}`
+			}
+		});
+	}
+}
+
+async function generateProducts() {
+	for (let i = 0; i < randomProductCount; i++) {
+		await prisma.product.create({
+			data: {
+				name: `Product${i}`,
+				type_id: randomIntFromInterval(1, randomProductTypeCount)
+			}
+		});
+	}
+}
+
+async function generateFiles() {
+	for (let i = 0; i < randomFilesCount; i++) {
+		await prisma.file.create({
+			data: {
+				filename: `${faker.lorem
+					.words(randomIntFromInterval(1, 5))
+					.split(' ')
+					.join('_')}.jpg`,
+				url: faker.internet.url(),
+				ticket_Id: randomIntFromInterval(1, randomTicketsCount)
+			}
+		});
+	}
+}
+
+async function generateTickets() {
+	for (let i = 0; i < randomTicketsCount; i++) {
+		await prisma.ticket.create({
+			data: {
+				title: faker.lorem.words(randomIntFromInterval(1, 5)),
+				description: faker.lorem.text(),
+				priority: randomEnum(TicketPriority),
+				creator_id: randomIntFromInterval(1, randomUsersCount),
+				asignee_id: randomIntFromInterval(1, randomUsersCount),
+				type: randomEnum(TicketType),
+				product_id: randomIntFromInterval(1, randomProductCount)
+			}
+		});
+	}
+}
+
+function randomIntFromInterval(min, max) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function randomEnum<T>(targetEnum: T, numerical = false): T[keyof T] {
+	const enumValues = Object.keys(targetEnum)
+		.map((n) => (numerical ? Number.parseInt(n) : n))
+		.filter((n) => !Number.isNaN(n)) as unknown as T[keyof T][];
+	const randomIndex = Math.floor(Math.random() * enumValues.length);
+	const randomEnumValue = enumValues[randomIndex];
+	return randomEnumValue;
 }
 
 // EXECUTE

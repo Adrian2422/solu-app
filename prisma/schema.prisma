@@ -11,25 +11,64 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  first_name    String
-  last_name     String
-  email         String         @unique
-  phone         String
-  password      String
-  role          UserRoles
-  is_blocked    Boolean        @default(false)
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
-  user_settings UserSettings?
+  id              Int           @id @default(autoincrement())
+  first_name      String
+  last_name       String
+  email           String        @unique
+  phone           String
+  password        String
+  role            UserRoles
+  is_blocked      Boolean       @default(false)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  user_settings   UserSettings?
+  created_tickets Ticket[]      @relation("ticket_creator")
+  assigned_ticket Ticket[]      @relation("ticket_asignee")
 }
 
 model UserSettings {
   id       Int       @id @default(autoincrement())
   language Languages
   color    String
-  user_id  Int
+  user_id  Int       @unique
   user     User      @relation(fields: [user_id], references: [id])
+}
+
+model Product {
+  id      Int         @id @default(autoincrement())
+  name    String
+  type_id Int
+  type    ProductType @relation(fields: [type_id], references: [id])
+  tickets Ticket[]
+}
+
+model ProductType {
+  id               Int       @id @default(autoincrement())
+  name             String
+  asigned_products Product[]
+}
+
+model Ticket {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String
+  priority    TicketPriority
+  type        TicketType
+	creator_id  Int
+  creator     User           @relation("ticket_creator", fields: [creator_id], references: [id])
+  asignee_id  Int?
+  asignee     User?          @relation("ticket_asignee", fields: [asignee_id], references: [id])
+  product_id  Int
+  product     Product        @relation(fields: [product_id], references: [id])
+  File        File[]
+}
+
+model File {
+  id        Int    @id @default(autoincrement())
+  url       String
+  filename  String
+  ticket_Id Int
+  ticket    Ticket @relation(fields: [ticket_Id], references: [id])
 }
 
 enum UserRoles {
@@ -42,4 +81,20 @@ enum UserRoles {
 enum Languages {
   EN
   PL
+}
+
+enum TicketPriority {
+  TRIVAL
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum TicketType {
+  BUG
+  ABSENCE
+  TYPO
+  CRASH
+  OTHER
 }
