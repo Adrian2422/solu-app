@@ -20,7 +20,7 @@ import {
 
 @Roles(UserRoles.ADMIN, UserRoles.SUPERUSER)
 @UseGuards(AuthGuard)
-@Controller('user')
+@Controller('api/user')
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
