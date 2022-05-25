@@ -6,8 +6,11 @@ import {
 	ClassSerializerInterceptor,
 	Injectable,
 	NotFoundException,
+	Query,
 	UseInterceptors
 } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TicketService {
@@ -67,7 +70,8 @@ export class TicketService {
 				}
 			});
 		}
-		return ticket;
+
+		return new TicketResponseDto(ticket);
 	}
 
 	async update(
@@ -104,7 +108,7 @@ export class TicketService {
 				id
 			},
 			data: {
-				File: {
+				files: {
 					deleteMany: {}
 				}
 			}
@@ -118,5 +122,30 @@ export class TicketService {
 
 		return new TicketResponseDto(deletedTicket);
 	}
-}
 
+	async offsetPaginate(
+		skip: number,
+		take: number
+	): Promise<TicketResponseDto[]> {
+		if (isNaN(skip)) {
+			return await (
+				await this.prismaService.ticket.findMany({ take })
+			).map((ticket) => new TicketResponseDto(ticket));
+		} else {
+			return await (
+				await this.prismaService.ticket.findMany({ skip, take })
+			).map((ticket) => new TicketResponseDto(ticket));
+		}
+	}
+
+	async cursorPaginate(
+		cursor?: Prisma.TicketWhereUniqueInput,
+		take?: number
+	): Promise<TicketResponseDto[]> {
+
+		return await (
+			await this.prismaService.ticket.findMany({ skip: 1, take, cursor })
+		).map((ticket) => new TicketResponseDto(ticket));
+	}
+
+}

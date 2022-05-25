@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import ISigninParams from '../interfaces/ISigninParams';
 import ISignupParams from '../interfaces/ISignupParams';
 import { PrismaService } from './../../prisma/prisma.service';
+import faker from '@faker-js/faker';
 import { ConflictException, HttpException, Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -37,7 +38,13 @@ export class AuthService {
 				email,
 				phone,
 				password: hashedPassword,
-				role
+				role,
+				user_settings: {
+					create: {
+						color: faker.internet.color(),
+						language: 'PL'
+					}
+				}
 			}
 		});
 

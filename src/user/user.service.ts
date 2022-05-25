@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from './dtos/createUser.dto';
 import IUpdateUserParams from './interfaces/IUpdateUserParams';
@@ -65,7 +66,13 @@ export class UserService {
 				email,
 				phone,
 				password: hashedPassword,
-				role
+				role,
+				user_settings: {
+					create: {
+						color: faker.internet.color(),
+						language: 'PL'
+					}
+				}
 			}
 		});
 	}

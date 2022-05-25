@@ -4,15 +4,16 @@ import {
 	Languages,
 	PrismaClient,
 	TicketPriority,
+	TicketStatus,
 	TicketType,
 	UserRoles
 } from '@prisma/client';
 
-const randomUsersCount = 50;
-const randomProductTypeCount = 5;
-const randomProductCount = 100;
-const randomTicketsCount = 200;
-const randomFilesCount = 500;
+const randomUsersCount = 100;
+const randomProductTypeCount = 20;
+const randomProductCount = 200;
+const randomTicketsCount = 500;
+const randomFilesCount = 400;
 const prisma = new PrismaClient();
 
 function hashPassword(password: string): Promise<string> {
@@ -104,7 +105,7 @@ async function generateFiles() {
 					.split(' ')
 					.join('_')}.jpg`,
 				url: faker.internet.url(),
-				ticket_Id: randomIntFromInterval(1, randomTicketsCount)
+				ticket_id: randomIntFromInterval(1, randomTicketsCount)
 			}
 		});
 	}
@@ -112,6 +113,14 @@ async function generateFiles() {
 
 async function generateTickets() {
 	for (let i = 0; i < randomTicketsCount; i++) {
+		const status = randomEnum(TicketStatus);
+		let created_at = faker.date.recent(120, '2021-12-01T00:00:00.000Z');
+		let updated_at = faker.date.recent(120, '2022-02-01T00:00:00.000Z');
+		let closed_at = null;
+		if(status === 'CLOSED') {
+			closed_at = faker.date.recent(120);
+		}
+
 		await prisma.ticket.create({
 			data: {
 				title: faker.lorem.words(randomIntFromInterval(1, 5)),
@@ -120,7 +129,11 @@ async function generateTickets() {
 				creator_id: randomIntFromInterval(1, randomUsersCount),
 				asignee_id: randomIntFromInterval(1, randomUsersCount),
 				type: randomEnum(TicketType),
-				product_id: randomIntFromInterval(1, randomProductCount)
+				product_id: randomIntFromInterval(1, randomProductCount),
+				status: status,
+				created_at,
+				updated_at,
+				closed_at
 			}
 		});
 	}
