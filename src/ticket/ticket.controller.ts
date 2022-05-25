@@ -3,20 +3,46 @@ import { IUserType } from './../user/interfaces/IUserType';
 import { TicketService } from './ticket.service';
 import { UpdateTicketDto } from './dtos/updateTicket.dto';
 import { User } from 'src/decorators/user.decorator';
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	ParseIntPipe,
+	Patch,
+	Post,
+	Query
+} from '@nestjs/common';
 
 @Controller('api/ticket')
 export class TicketController {
-	constructor(private readonly ticketService: TicketService){}
+	constructor(private readonly ticketService: TicketService) {}
 
 	@Get()
 	findAll() {
 		return this.ticketService.findAll();
 	}
 
+	@Get('offsetPaginate')
+	async offsetPaginateTickets(
+		@Query('skip', ParseIntPipe) skip: number,
+		@Query('take', ParseIntPipe) take: number
+	) {
+		return this.ticketService.offsetPaginate(skip, take);
+	}
+
+	@Get('cursorPaginate')
+	async cursorPaginateTickets(
+		@Query('cursor', ParseIntPipe) cursor: number,
+		@Query('take', ParseIntPipe) take: number
+	) {
+		return this.ticketService.cursorPaginate({id: cursor}, take);
+	}
+
 	@Get(':id')
 	findOne(@Param('id', ParseIntPipe) ticketId: number) {
-		return this.ticketService.findOne(ticketId)
+		return this.ticketService.findOne(ticketId);
 	}
 
 	@Post()
@@ -25,7 +51,10 @@ export class TicketController {
 	}
 
 	@Patch(':id')
-	update(@Param('id', ParseIntPipe) id: number, @Body() updateTicketDto: UpdateTicketDto) {
+	update(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() updateTicketDto: UpdateTicketDto
+	) {
 		return this.ticketService.update(id, updateTicketDto);
 	}
 

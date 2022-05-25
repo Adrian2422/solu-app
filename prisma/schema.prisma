@@ -31,14 +31,14 @@ model UserSettings {
   language Languages
   color    String
   user_id  Int       @unique
-  user     User      @relation(fields: [user_id], references: [id])
+  user     User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Product {
   id      Int         @id @default(autoincrement())
   name    String
   type_id Int
-  type    ProductType @relation(fields: [type_id], references: [id])
+  type    ProductType @relation(fields: [type_id], references: [id], onDelete: Cascade)
   tickets Ticket[]
 }
 
@@ -54,21 +54,25 @@ model Ticket {
   description String
   priority    TicketPriority
   type        TicketType
-	creator_id  Int
-  creator     User           @relation("ticket_creator", fields: [creator_id], references: [id])
+  creator_id  Int
+  creator     User           @relation("ticket_creator", fields: [creator_id], references: [id], onDelete: Cascade)
   asignee_id  Int?
-  asignee     User?          @relation("ticket_asignee", fields: [asignee_id], references: [id])
+  asignee     User?          @relation("ticket_asignee", fields: [asignee_id], references: [id], onDelete: SetNull)
   product_id  Int
-  product     Product        @relation(fields: [product_id], references: [id])
-  File        File[]
+  product     Product        @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  files       File[]
+	status			TicketStatus  @default(NEW)
+	created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+	closed_at		DateTime?
 }
 
 model File {
   id        Int    @id @default(autoincrement())
   url       String
   filename  String
-  ticket_Id Int
-  ticket    Ticket @relation(fields: [ticket_Id], references: [id])
+  ticket_id Int
+  ticket    Ticket @relation(fields: [ticket_id], references: [id], onDelete: Cascade)
 }
 
 enum UserRoles {
@@ -97,4 +101,12 @@ enum TicketType {
   TYPO
   CRASH
   OTHER
+}
+
+enum TicketStatus {
+	NEW
+	TAKEN
+	CLARIFICATION_NEEDED
+	REJECTED
+	CLOSED
 }
