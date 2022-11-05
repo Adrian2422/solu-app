@@ -12,7 +12,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main.js",
+    "start:prod": "npm install && node dist/src/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --quiet --fix",
 		"fix": "npm run format && npm run lint",
 		"test": "jest",
