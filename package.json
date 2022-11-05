@@ -12,7 +12,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "npm run prebuild && npm run build && node dist/src/main",
+    "start:prod": "npm run prebuild && node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --quiet --fix",
 		"fix": "npm run format && npm run lint",
 		"test": "jest",
